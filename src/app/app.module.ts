@@ -10,6 +10,9 @@ import { TabsPage } from '../pages/tabs/tabs';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CarProvider } from '../providers/car/car';
+import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
+import { SimulateProvider } from '../providers/simulate/simulate';
 
 @NgModule({
   declarations: [
@@ -34,7 +37,10 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    CarProvider,
+    PickupPubSubProvider,
+    SimulateProvider
   ]
 })
 export class AppModule {}
