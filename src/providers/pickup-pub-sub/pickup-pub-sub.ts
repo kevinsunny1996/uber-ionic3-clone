@@ -1,5 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
+import 'rxjs/add/operator/map';
 
 /*
   Generated class for the PickupPubSubProvider provider.
@@ -8,10 +10,48 @@ import { Injectable } from '@angular/core';
   and Angular DI.
 */
 @Injectable()
-export class PickupPubSubProvider {
+export class PickupPubSubService {
 
-  constructor(public http: HttpClient) {
+  public pickup$;
+  private _observer;
+
+  public EVENTS = {
+    PICKUP: 'pickup',
+    DROPOFF: 'dropoff',
+    ARRIVAL_TIME: 'arrival-time'
+  }
+
+  constructor() {
     console.log('Hello PickupPubSubProvider Provider');
+    this.pickup$ = new Observable(observer => {
+      this._observer = observer;
+    })
+    .share();
+  }
+
+  watch() {
+    return this.pickup$
+  }
+
+  emitArrivalTime(time) {
+    this._observer.next({
+      event: this.EVENTS.ARRIVAL_TIME,
+      data: time
+    })
+  }
+
+  emitPickup() {
+    this._observer.next({
+      event: this.EVENTS.PICKUP,
+      data: null
+    })
+  }
+
+  emitDropOff() {
+    this._observer.next({
+      event: this.EVENTS.DROPOFF,
+      data: null
+    })
   }
 
 }

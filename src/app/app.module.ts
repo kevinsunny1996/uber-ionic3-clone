@@ -5,9 +5,9 @@ import { MyApp } from './app.component'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
-import { CarProvider } from '../providers/car/car';
-import { PickupPubSubProvider } from '../providers/pickup-pub-sub/pickup-pub-sub';
-import { SimulateProvider } from '../providers/simulate/simulate';
+import { CarService } from '../providers/car/car';
+import { PickupPubSubService } from '../providers/pickup-pub-sub/pickup-pub-sub';
+import { SimulateService } from '../providers/simulate/simulate';
 
 @NgModule({
   declarations: [
@@ -25,9 +25,9 @@ import { SimulateProvider } from '../providers/simulate/simulate';
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    CarProvider,
-    PickupPubSubProvider,
-    SimulateProvider
+    CarService,
+    PickupPubSubService,
+    SimulateService
   ]
 })
 export class AppModule {}
