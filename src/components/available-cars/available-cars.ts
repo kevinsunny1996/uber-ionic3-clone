@@ -63,7 +63,7 @@ export class AvailableCarsComponent implements OnInit {
   }
 
   updateCarMarker(car) {
-    for (var i=0; numOfCars=this.carMarkers.length;i<numOfCars;i++) {
+    for (var i=0; numOfCars=this.carMarkers.length,i<numOfCars;i++) {
       if(this.carMarkers[i].id===car.id) {
           this.carMarkers[i].setPosition(new google.maps.LatLng(car.coord.lat,car.coord.lng));
           return;

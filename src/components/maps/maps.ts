@@ -15,7 +15,7 @@ declare var google: any;
   selector: 'maps',
   templateUrl: 'maps.html'
 })
-export class MapComponent extends OnInit{
+export class MapComponent implements OnInit{
 
   @Input() isPickupRequested: boolean;
   @Input() destination;
@@ -63,7 +63,7 @@ export class MapComponent extends OnInit{
         let lng = resp.coords.longitude;
         console.log('lat'+lat+'long'+lng);
         let location = new google.maps.LatLng(lat,lng);
-        console.log('current location'+loaction);
+        console.log('current location'+location);
         observable.next(location);
         loading.dismiss();
       })
