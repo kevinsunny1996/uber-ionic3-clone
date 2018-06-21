@@ -1,4 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input, OnChanges, Output, EventEmitter, OnInit } from '@angular/core';
+import { PickupPubSubService } from '../../providers/pickup-pub-sub/pickup-pub-sub';
+import { Observable } from 'rxjs/Observable';
+
+declare var google: any;
 
 /**
  * Generated class for the PickupComponent component.
@@ -10,13 +14,82 @@ import { Component } from '@angular/core';
   selector: 'pickup',
   templateUrl: 'pickup.html'
 })
-export class PickupComponent {
+export class PickupComponent implements OnInit, OnChanges {
 
-  text: string;
+  @Input() isPinSet: boolean;
+  @Input() map;
+  @Input() isPickupRequested;
+  @Input() destination;
+  @Input() updatedPickupLocation: EventEmitter<any> = new EventEmitter();
 
-  constructor() {
+  private pickupMarker;
+  private popup;
+  private pickupSubscription;
+  constructor(private pickupPubSubService: PickupPubSubService) {
     console.log('Hello PickupComponent Component');
-    this.text = 'Hello World';
+  }
+
+  ngOnInit() {
+    this.pickupSubscription = this.pickupPubSubService.watch().subscribe(e => {
+      if(e.event === this.pickupPubSubService.EVENTS.ARRIVAL_TIME){
+        this.updateTime(e.data);
+      }
+    })
+  }
+
+  ngOnChanges(changes) {
+    if(!this.isPickupRequested) {
+      if(this.isPinSet) {
+        this.showPickupMarker();
+      }else{
+        this.hidePickupMarker();
+      }
+    }
+
+    if(this.destination) {
+      this.hidePickupMarker();
+    }
+  }
+
+  showPickupMarker() {
+    this.hidePickupMarker();
+
+    this.pickupMarker = new google.maps.Marker({
+      map:this.map,
+      animation:google.maps.Animation.BOUNCE,
+      position: this.map.getCenter(),
+      icon: 'assets/imgs/pin.png'
+    })
+
+    setTimeout(() => {
+      this.pickupMarker.setAnimation(null)
+    },750);
+
+    this.showPickupTime();
+
+    this.updatedPickupLocation.next(this.pickupMarker,getPosition());
+  }
+
+  hidePickupMarker() {
+    if(this.pickupMarker) {
+      this.pickupMarker.setMap(null);
+    }
+  }
+
+  showPickupTime() {
+    this.popup = new google.maps.InfoWindow({
+      content: '<h5>You Are Here!!!</h5>'
+    });
+    this.popup.open(this.map, this.pickupMarker);
+
+    google.maps.event.addListener(this.pickupMarker, 'click', () => {
+      this.popup.open(this.map, this.pickupMarker);
+    });
+  }
+
+  updateTime(seconds) {
+    let minutes = Math.floor(seconds/60);
+    this.popup.setContent(`<h5>${minutes} minutes</h5>`);
   }
 
 }
